@@ -1,7 +1,7 @@
 import os
 from huggingface_hub import snapshot_download
 from google.cloud import storage
-repo_id="[hugging face repo/model]", 
+repo_id="", 
 local_dir="/tmp"
 gcs_bucket_name="[bucket-name]" 
 gcs_prefix="[folder name]"
@@ -20,7 +20,7 @@ def download_model_then_upload_model():
         resume_download=True,  # Resume interrupted downloads
         max_workers=10  # Parallel downloads
     )
-    upload_model()
+    #upload_model()
 
 
 
