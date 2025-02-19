@@ -41,6 +41,11 @@ AWS_EC2_METADATA_DISABLED=true
 ```
 You currently need to get the account keys and secrets for GCS object storage to put in the AWS keys below. You can get them in the cloud console->storage ->settings create keys
 
+```sh
+export AWS_ACCESS_KEY_ID="new value"
+export AWS_SECRET_ACCESS_KEY="new value"
+```
+
 Start vLLM
 ```sh
 AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com AWS_ENDPOINT_URL=https://storage.googleapis.com vllm serve s3://bkauf-models-usc/Llama-3.1-70B-Instruct --load-format runai_streamer --swap-space 10
