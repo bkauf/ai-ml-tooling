@@ -19,7 +19,7 @@ python3 -m venv venv
  ```sh
  source venv/bin/activate
 ```
-install vLLM with Run AI loader
+### Install vLLM with Run AI loader
 ```sh
 pip3 install vllm[runai]
 ```
