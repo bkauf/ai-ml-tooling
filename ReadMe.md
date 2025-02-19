@@ -1,5 +1,4 @@
-## Load Data From Hugging Face to Google Cloud Storage
- [Example](data-loading/hf-2-gcs.py)
+## Load Data with Model Streamer in vLLM on Google Cloud
 
 
 #Prep VM Machine for vLLM teseting
@@ -7,7 +6,7 @@
 ## install CUDA and drivers
 https://cloud.google.com/compute/docs/gpus/install-drivers-gpu
 
- Create a virtual envoinment
+## Create a virtual envoinment and install dependencies 
  ```sh
 sudo  apt install python3.11-venv
 sudo apt install python3-pip
@@ -16,7 +15,7 @@ cd vllm
 python3 -m venv venv
 ```
 
-## Activate the Envonrionment
+### Activate the Envonrionment
  ```sh
  source venv/bin/activate
 ```
@@ -40,6 +39,7 @@ RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com AWS_ENDPOINT_URL=https
 RUNAI_STREAMER_S3_TRACE=1
 AWS_EC2_METADATA_DISABLED=true
 ```
+You currently need to get the account keys and secrets for GCS object storage to put in the AWS keys below. You can get them in the cloud console->storage ->settings create keys
 
 Start vLLM
 ```sh
