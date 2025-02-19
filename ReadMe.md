@@ -35,7 +35,8 @@ source venv/bin/activate
 Set vars
 ```sh
 RUNAI_STREAMER_S3_USE_VIRTUAL_ADDRESSING=0
-RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com AWS_ENDPOINT_URL=https://storage.googleapis.com
+RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com
+AWS_ENDPOINT_URL=https://storage.googleapis.com
 RUNAI_STREAMER_S3_TRACE=1
 AWS_EC2_METADATA_DISABLED=true
 ```
