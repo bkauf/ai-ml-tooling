@@ -1,6 +1,5 @@
 ## Load Data with Model Streamer in vLLM on Google Cloud
 
-
 #Prep VM Machine for vLLM teseting
 
 ## install CUDA and drivers
@@ -25,12 +24,8 @@ pip3 install vllm[runai]
 ```
 
 # Running vLLM with a model from GCS
-Requires running from root
 
-```sh
-sudo su
-source venv/bin/activate
-```
+
 
 Set vars
 ```sh
@@ -39,6 +34,7 @@ RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com
 AWS_ENDPOINT_URL=https://storage.googleapis.com
 RUNAI_STREAMER_S3_TRACE=1
 AWS_EC2_METADATA_DISABLED=true
+
 ```
 You currently need to get the account keys and secrets for GCS object storage to put in the AWS keys below. You can get them in the cloud console->storage ->settings create keys
 
@@ -47,10 +43,23 @@ export AWS_ACCESS_KEY_ID="new value"
 export AWS_SECRET_ACCESS_KEY="new value"
 ```
 
-Start vLLM
+## Note - Make sure you don't have sub folders in your GCS bucket that have "original" copies of the OSS models
+
+Start vLLM for a 70B model
 ```sh
-AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com AWS_ENDPOINT_URL=https://storage.googleapis.com vllm serve s3://bkauf-models-usc/Llama-3.1-70B-Instruct --load-format runai_streamer --swap-space 10
-```
+
+AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com AWS_ENDPOINT_URL=https://storage.googleapis.com \
+vllm serve s3://bkauf-models-hns/Llama-3.1-70B-Instruct \
+--served-model-name Llama-3.1-70B \
+--dtype bfloat16 \
+--tensor-parallel-size 4 \
+--disable-log-stats \
+--load-format runai_streamer 
+
+  ```
+
 
 
 # Hyperdisk ML Disk Attach
@@ -69,7 +78,3 @@ Mount the disk assuming lsblk output shows it to be sdb
 ```sh
 sudo mount -o ro,noload /dev/sdb /mnt/disks
 ```
-
-
-
-
