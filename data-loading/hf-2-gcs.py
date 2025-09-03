@@ -1,7 +1,7 @@
 import os
 from huggingface_hub import snapshot_download
 from google.cloud import storage
-repo_id="", 
+repo_id="" 
 local_dir="/tmp"
 gcs_bucket_name="[bucket-name]" 
 gcs_prefix="[folder name]"
