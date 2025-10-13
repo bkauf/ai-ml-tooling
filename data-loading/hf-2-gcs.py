@@ -1,6 +1,8 @@
 import os
 from huggingface_hub import snapshot_download
 from google.cloud import storage
+
+# change the below to match your Google Cloud and Huggingface model locations
 repo_id="google/gemma-3-4b-it" 
 local_dir="/tmp"
 gcs_bucket_name="" 
