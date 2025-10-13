@@ -1,5 +1,10 @@
 ## Load Data with Model Streamer in vLLM on Google Cloud
 
+
+# Transfer Data from Hugging Face to GCS
+
+Use data-loading/hf-gcs.py script. Change vars to match model/folder names 
+
 #Prep VM Machine for vLLM teseting
 
 ## install CUDA and drivers

@@ -3,7 +3,7 @@ from huggingface_hub import snapshot_download
 from google.cloud import storage
 repo_id="google/gemma-3-4b-it" 
 local_dir="/tmp"
-gcs_bucket_name="bkauf-models-usc" 
+gcs_bucket_name="" 
 gcs_prefix="gemma-3-4b-it"
 
 
