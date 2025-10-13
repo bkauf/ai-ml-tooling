@@ -72,34 +72,34 @@ vllm serve gs://models-usc/gemma-3-4b-it --load-format=runai_streamer
 
 1. Setup workload Identity 
 
-If you are using an Autopilot GKE cluster workload identity is enabled by default. If using a GKE Standard cluster you will need to [enable it](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable_on_clusters_and_node_pools) if it not already on. 
+    If you are using an Autopilot GKE cluster workload identity is enabled by default. If using a GKE Standard cluster you will need to [enable it](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#enable_on_clusters_and_node_pools) if it not already on. 
 
 
 2. Create IAM Rules for workload identity bucket access
 
     Create two policy bindings that the service account you will use in your GKE cluster can use to access the models in Google Cloud Object Storage
 
-        ```sh
-        export BUCKET=""
-        export PROJECT_NUMBER=""
-        export PROJECT_ID=""
-        export SERVICE_ACCOUNT="gcs-access"
+    ```sh
+    export BUCKET=""
+    export PROJECT_NUMBER=""
+    export PROJECT_ID=""
+    export SERVICE_ACCOUNT="gcs-access"
 
-        gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/$SERVICE_ACCOUNT --role roles/storage.bucketViewer
+    gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/$SERVICE_ACCOUNT --role roles/storage.bucketViewer
 
-        gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/$SERVICE_ACCOUNT --role roles/storage.objectUser
-        ```
+    gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/$SERVICE_ACCOUNT --role roles/storage.objectUser
+    ```
 3. Sample deployment.yaml
 
-Use the sample **deployment.yaml** file and change model location to use the run ai streamer on GKE with workload identity 
+    Use the sample **deployment.yaml** file and change model location to use the run ai streamer on GKE with workload identity 
 
-```sh
-kubectl apply -f deployment.yaml
-```
-View the logs to see the model streamer output
-```sh 
-kubectl logs [pod name]
-```
+    ```sh
+    kubectl apply -f deployment.yaml
+    ```
+    View the logs to see the model streamer output
+    ```sh 
+    kubectl logs [pod name]
+    ```
 
 
 4. Optional- [Use Google Inference Quickstart](https://cloud.google.com/kubernetes-engine/docs/how-to/machine-learning/inference/inference-quickstart)
@@ -118,10 +118,10 @@ kubectl logs [pod name]
 GCS anywhere cache can reduce load times by as much as 30% once a model is cached to a zone where the GPU is located. You can enable the cache with the following commands. This feature is very useful for scale out inference workloads.
      
 ```sh
-export ZONE="us-central1-c"
+    export ZONE="us-central1-c"
 
     gcloud storage buckets anywhere-caches create gs://$BUCKET $ZONE
-    
-    ## Check the status of the cache
-    gcloud storage buckets anywhere-caches describe $BUCKET/$ZONE
+        
+     ## Check the status of the cache
+     gcloud storage buckets anywhere-caches describe $BUCKET/$ZONE
 ```
