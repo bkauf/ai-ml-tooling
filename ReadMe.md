@@ -1,6 +1,6 @@
 # Load Data into GPUs fast with Model Streamer in vLLM on Google Cloud
 
-The Run:ai model streamer loads models from object storage to GPU memory direct from CPU memory. It is a package available for vLLM and greatly accelerates model download times.
+The [Run:ai model streamer](https://docs.vllm.ai/en/latest/models/extensions/runai_model_streamer.html) loads models from object storage to GPU memory direct from CPU memory. It is a package available for vLLM and greatly accelerates model download times.
 
 ## Prep VM Machine for vLLM testing
 
