@@ -1,10 +1,10 @@
 import os
 from huggingface_hub import snapshot_download
 from google.cloud import storage
-repo_id="" 
+repo_id="google/gemma-3-4b-it" 
 local_dir="/tmp"
-gcs_bucket_name="[bucket-name]" 
-gcs_prefix="[folder name]"
+gcs_bucket_name="bkauf-models-usc" 
+gcs_prefix="gemma-3-4b-it"
 
 
 def download_model_then_upload_model():
@@ -20,7 +20,7 @@ def download_model_then_upload_model():
         resume_download=True,  # Resume interrupted downloads
         max_workers=10  # Parallel downloads
     )
-    #upload_model()
+    upload_model()
 
 
 

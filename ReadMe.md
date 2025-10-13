@@ -18,63 +18,55 @@ python3 -m venv venv
  ```sh
  source venv/bin/activate
 ```
-### Install vLLM with Run AI loader
+### Install vLLM with [Run AI loader](https://docs.vllm.ai/en/latest/models/extensions/runai_model_streamer.html)
 ```sh
 pip3 install vllm[runai]
 ```
 
 # Running vLLM with a model from GCS
-
-
-
-Set vars
-```sh
-RUNAI_STREAMER_S3_USE_VIRTUAL_ADDRESSING=0
-RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com
-AWS_ENDPOINT_URL=https://storage.googleapis.com
-RUNAI_STREAMER_S3_TRACE=1
-AWS_EC2_METADATA_DISABLED=true
-
-```
-You currently need to get the account keys and secrets for GCS object storage to put in the AWS keys below. You can get them in the cloud console->storage ->settings create keys
-
-```sh
-export AWS_ACCESS_KEY_ID="new value"
-export AWS_SECRET_ACCESS_KEY="new value"
-```
-
 ## Note - Make sure you don't have sub folders in your GCS bucket that have "original" copies of the OSS models
 
-Start vLLM for a 70B model
-```sh
-
-AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
-AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-RUNAI_STREAMER_S3_ENDPOINT=https://storage.googleapis.com AWS_ENDPOINT_URL=https://storage.googleapis.com \
-vllm serve s3://bkauf-models-hns/Llama-3.1-70B-Instruct \
---served-model-name Llama-3.1-70B \
---dtype bfloat16 \
---tensor-parallel-size 4 \
---disable-log-stats \
---load-format runai_streamer 
-
-  ```
-
-
-
-# Hyperdisk ML Disk Attach
 
 ```sh
-export ZONE=""
-export DISK_NAME=""
-export VM_NAME=""
+vllm serve gs://bkauf-models-usc/DeepSeek-R1-Distill-Llama-8B --load-format=runai_streamer --served-model-name deepSeek8B
 ```
 
+# GIQ & K8s Manifests 
+
+
+
+gcloud container ai profiles manifests create --model=meta-llama/Llama-3.3-70B-Instruct \
+--model-server=vllm --model-server-version=v0.7.2 --accelerator-type=nvidia-h100-80gb    
+
+
+
+## Setup workload Identity 
+
+
+## Create IAM Rules for workload identity bucket access
+
 ```sh
-gcloud compute instances attach-disk $VM_NAME --disk=$DISK_NAME --zone=$ZONE --mode=ro
+export BUCKET=""
+export PROJECT_NUMBER=""
+export PROJECT_ID=""
+export SERVICE_ACCOUNT="gcs-access"
+
+
+
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/$SERVICE_ACCOUNT --role roles/storage.bucketViewer
+
+gcloud storage buckets add-iam-policy-binding gs://$BUCKET --member principal://iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/$PROJECT_ID.svc.id.goog/subject/ns/default/sa/$SERVICE_ACCOUNT --role roles/storage.objectUser
+
 ```
 
-Mount the disk assuming lsblk output shows it to be sdb
+
+#Enable [Anywhere Cache](https://cloud.google.com/storage/docs/anywhere-cache) for Zonal Caching
 ```sh
-sudo mount -o ro,noload /dev/sdb /mnt/disks
+export ZONE="us-central1-c"
+
+gcloud storage buckets anywhere-caches create gs://$BUCKET $ZONE
+```
+##Check the status of the cache
+```sh
+gcloud storage buckets anywhere-caches describe $BUCKET/$ZONE
 ```
