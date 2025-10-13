@@ -27,13 +27,6 @@ spec:
             - python3
             - -m
             - vllm.entrypoints.openai.api_server
-          # env:
-          # - name: VLLM_USE_V1
-          #   value: "1"
-          # - name: VLLM_ALLOW_LONG_MAX_MODEL_LEN
-          #   value: "1"
-          # - name: LD_LIBRARY_PATH
-          #   value: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
           name: inference-server
           image: vllm/vllm-openai:nightly-da4455609d9e29abebc15f6c598dfd772c2b6513
           ports:
