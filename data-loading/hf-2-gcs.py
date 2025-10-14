@@ -47,11 +47,3 @@ def upload_model():
 
 
 download_model_then_upload_model()
-
-
-
-
-
-gcloud container clusters create test \
-    --zone us-central1-a \
-   --num-nodes=1 \

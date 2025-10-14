@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-tester
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-tester
+  template:
+    metadata:
+      labels:
+        app: vllm-tester
+    spec:
+      serviceAccountName: gcs-access
+      containers:
+        - args:
+            - --model=google/gemma-3-4b-it
+            - --disable-log-requests
+            - --max-num-batched-tokens=512
+            - --max-num-seqs=128
+            - --max-model-len=2048
+            - --tensor-parallel-size=1
+          command:
+            - python3
+            - -m
+            - vllm.entrypoints.openai.api_server
+          env:
+            - name: MODEL_ID
+              value: google/gemma-3-4b-it
+            - name: HUGGING_FACE_HUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: hf_api_token
+                  name: hf-secret
+          name: inference-server
+          image: vllm/vllm-openai:nightly-da4455609d9e29abebc15f6c598dfd772c2b6513
+          ports:
+            - containerPort: 8000
+              name: metrics
+          readinessProbe:
+            failureThreshold: 600
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 10
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+            requests:
+              nvidia.com/gpu: "1"
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-l4
+      volumes:
+        - emptyDir:
+            medium: Memory
+          name: dshm
