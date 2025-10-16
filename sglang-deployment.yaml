@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sglang-test
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sglang-test
+  template:
+    metadata:
+      labels:
+        app: sglang-test
+    spec:
+      containers:
+       -  name: inference-server
+          image: dganochenko/sglang:v0.5.2 #lmsysorg/sglang:latest
+          env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                key: gcp_api_token
+                name: gcp-token
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                key: gcp_api_secret
+                name: gcp-secret
+          - name: RUNAI_STREAMER_S3_ENDPOINT
+            value: "https://storage.googleapis.com"
+          - name: AWS_ENDPOINT_URL
+            value: "https://storage.googleapis.com"
+          - name: RUNAI_STREAMER_S3_USE_VIRTUAL_ADDRESSING
+            value: "0"
+          - name: AWS_EC2_METADATA_DISABLED
+            value: "true"
+          - name: RUNAI_STREAMER_S3_TRACE
+            value: "0"
+          command: ["python3", "-m", "sglang.launch_server"]
+          args: ["--model-path", "s3://bkauf-models-usc/gemma-3-4b-it", "--served-model-name", "gemma-3-4b", "--load-format", "remote", "--host", "0.0.0.0", "--port", "30000", "--tp", "1", "--context-length",  "2048"]
+          ports:
+            - containerPort: 8000
+              name: metrics
+          readinessProbe:
+            failureThreshold: 600
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 10
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+            requests:
+              nvidia.com/gpu: "1"
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-l4
+      volumes:
+        - emptyDir:
+            medium: Memory
+          name: dshm

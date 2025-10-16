@@ -125,3 +125,16 @@ GCS anywhere cache can reduce load times by as much as 30% once a model is cache
      ## Check the status of the cache
      gcloud storage buckets anywhere-caches describe $BUCKET/$ZONE
 ```
+
+
+### Creating Secrets in Kubernetes 
+
+example 
+```sh
+kubectl create secret generic gcp-token --from-literal=gcp_api_token=xyz
+
+
+kubectl create secret generic gcp-secret --from-literal=gcp_api_secret=xyz
+
+
+```
