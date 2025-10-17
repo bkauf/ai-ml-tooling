@@ -13,7 +13,6 @@ spec:
       labels:
         app: vllm-hf
     spec:
-      serviceAccountName: gcs-access
       containers:
         - args:
             - --model=google/gemma-3-4b-it
