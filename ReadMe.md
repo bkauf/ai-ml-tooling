@@ -51,6 +51,10 @@ hf auth login
 gcloud init
 ```
 
+7. Run the script to populate the GCS bucket with the model from Huggingface
+```sh
+python3 data-loading/hf-gcs.py
+```
 
 7. Install vLLM with [Run AI loader](https://docs.vllm.ai/en/latest/models/extensions/runai_model_streamer.html)
 ```sh
@@ -69,6 +73,7 @@ vllm serve gs://models-usc/gemma-3-4b-it --load-format=runai_streamer
 
 ## GIQ & Kubernetes Manifests 
 
+The following steps can help you use the model streamer on a GKE cluster
 
 1. Setup workload Identity 
 
@@ -91,7 +96,7 @@ vllm serve gs://models-usc/gemma-3-4b-it --load-format=runai_streamer
     ```
 3. Sample deployment.yaml
 
-    Use the sample **deployment.yaml** file and change model location to use the run ai streamer on GKE with workload identity 
+    Use the sample **deployment.yaml** file and change model location and service account to use the Run:ai streamer on GKE with workload identity. If using autopilot you will need to modify the deployment.yaml file to include the [machine type needed in autopilot](https://cloud.google.com/kubernetes-engine/docs/how-to/autopilot-gpus#request-gpus)
 
     ```sh
     kubectl apply -f deployment.yaml
