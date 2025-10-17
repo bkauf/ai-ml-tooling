@@ -56,7 +56,7 @@ gcloud init
 python3 data-loading/hf-gcs.py
 ```
 
-7. Install vLLM with [Run AI loader](https://docs.vllm.ai/en/latest/models/extensions/runai_model_streamer.html)
+8. Install vLLM with [Run AI loader](https://docs.vllm.ai/en/latest/models/extensions/runai_model_streamer.html)
 ```sh
 pip3 install vllm[runai]
 ```
