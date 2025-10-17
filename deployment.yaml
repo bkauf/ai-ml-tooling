@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vllm-tester
+  name: vllm-streamer
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: vllm-tester
+      app: vllm-streamer
   template:
     metadata:
       labels:
-        app: vllm-tester
+        app: vllm-streamer
     spec:
       serviceAccountName: gcs-access
       containers:
