@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clear-cache
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clear-cache
+  template:
+    metadata:
+      labels:
+        app: clear-cache
+    spec:
+      serviceAccountName: gcs-access
+      #  ADDED: Toleration to allow scheduling on GPU nodes 🌟
+      tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+      containers:
+        - args:
+          - |
+            set -e
+            echo "Starting node preparation (drop caches only)..."
+            # --- Run sync and drop caches ---
+            echo "Running sync..."
+            sync
+            echo "Dropping caches (writing 3 to /proc/sys/vm/drop_caches)..."
+            # Write directly to the mounted host path
+            echo 3 > /host-proc/sys/vm/drop_caches
+            echo "Caches dropped."
+
+            echo "Node preparation complete. Sleeping indefinitely."
+            sleep infinity
+          name: prep-container-dropcache
+          image: ubuntu:latest # Using a standard image with basic tools
+          command: ["/bin/bash", "-c"]
+          securityContext:
+            # Required to modify host /proc settings
+            privileged: true
+          volumeMounts:
+            # Mount host /proc to access drop_caches
+            - name: host-proc
+              mountPath: /host-proc
+          # Removed the mount for /host-sys as it's no longer needed
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-l4
+    # Define volumes mapping to host paths
+      volumes:
+        - name: host-proc
+          hostPath:
+            path: /proc
